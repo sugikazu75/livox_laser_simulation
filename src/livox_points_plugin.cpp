@@ -96,13 +96,13 @@ void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr
     minDist = rangeElem->Get<double>("min");
     maxDist = rangeElem->Get<double>("max");
     auto offset = laserCollision->GetRelativePose();
-    math::Vector3 start_point, end_point;
+    ignition::math::Vector3<double> start_point, end_point;
     for (int j = 0; j < samplesStep; j += downSample) {
         int index = j % maxPointSize;
         auto &rotate_info = aviaInfos[index];
-        math::Quaternion ray;
-        ray.SetFromEuler(math::Vector3(0.0, rotate_info.zenith, rotate_info.azimuth));
-        auto axis = offset.rot * ray * math::Vector3(1.0, 0.0, 0.0);
+        ignition::math::Quaternion<double> ray;
+        ray.SetFromEuler(ignition::math::Vector3(0.0, rotate_info.zenith, rotate_info.azimuth));
+        auto axis = offset.rot * ray * ignition::math::Vector3(1.0, 0.0, 0.0);
         start_point = minDist * axis + offset.pos;
         end_point = maxDist * axis + offset.pos;
         rayShape->AddRay(start_point, end_point);
@@ -149,12 +149,12 @@ void LivoxPointsPlugin::OnNewLaserScans() {
                 scan->set_intensities(index, intensity);
 
                 auto rotate_info = pair.second;
-                math::Quaternion ray;
-                ray.SetFromEuler(math::Vector3(0.0, rotate_info.zenith, rotate_info.azimuth));
+                ignition::math::Quaternion<double> ray;
+                ray.SetFromEuler(ignition::math::Vector3(0.0, rotate_info.zenith, rotate_info.azimuth));
                 //                auto axis = rotate * ray * math::Vector3(1.0, 0.0, 0.0);
                 //                auto point = range * axis + world_pose.Pos();//转换成世界坐标系
 
-                auto axis = ray * math::Vector3(1.0, 0.0, 0.0);
+                auto axis = ray * ignition::math::Vector3(1.0, 0.0, 0.0);
                 if (range >= RangeMax()) {
                     if (useInf) {
                         range = std::numeric_limits<double>::infinity();
@@ -194,8 +194,8 @@ void LivoxPointsPlugin::OnNewLaserScans() {
 void LivoxPointsPlugin::InitializeRays(std::vector<std::pair<int, AviaRotateInfo>> &points_pair,
                                        boost::shared_ptr<physics::LivoxOdeMultiRayShape> &ray_shape) {
     auto &rays = ray_shape->RayShapes();
-    math::Vector3 start_point, end_point;
-    math::Quaternion ray;
+    ignition::math::Vector3<double> start_point, end_point;
+    ignition::math::Quaternion<double> ray;
     auto offset = laserCollision->GetRelativePose();
     int64_t end_index = currStartIndex + samplesStep;
     int ray_index = 0;
@@ -204,8 +204,8 @@ void LivoxPointsPlugin::InitializeRays(std::vector<std::pair<int, AviaRotateInfo
     for (int k = currStartIndex; k < end_index; k += downSample) {
         auto index = k % maxPointSize;
         auto &rotate_info = aviaInfos[index];
-        ray.SetFromEuler(math::Vector3(0.0, rotate_info.zenith, rotate_info.azimuth));
-        auto axis = offset.rot * ray * math::Vector3(1.0, 0.0, 0.0);
+        ray.SetFromEuler(ignition::math::Vector3(0.0, rotate_info.zenith, rotate_info.azimuth));
+        auto axis = offset.rot * ray * ignition::math::Vector3(1.0, 0.0, 0.0);
         start_point = minDist * axis + offset.pos;
         end_point = maxDist * axis + offset.pos;
         if (ray_index < ray_size) {

@@ -169,8 +169,8 @@ void LivoxOdeMultiRayShape::UpdateCallback(void *_data, dGeomID _o1, dGeomID _o2
 }
 
 //////////////////////////////////////////////////
-void LivoxOdeMultiRayShape::AddRay(const math::Vector3 &_start,
-                              const math::Vector3 &_end)
+void LivoxOdeMultiRayShape::AddRay(const ignition::math::Vector3<double> &_start,
+                                   const ignition::math::Vector3<double> &_end)
 {
     MultiRayShape::AddRay(_start, _end);
 
@@ -186,9 +186,9 @@ void LivoxOdeMultiRayShape::AddRay(const math::Vector3 &_start,
     this->rays.push_back(ray);
 }
 void LivoxOdeMultiRayShape::Init() {
-    math::Vector3 start, end, axis;
+    ignition::math::Vector3<double> start, end, axis;
     double yawAngle, pitchAngle;
-    math::Quaternion ray;
+    ignition::math::Quaternion<double> ray;
     double yDiff;
     double horzMinAngle, horzMaxAngle;
     int horzSamples = 1;
