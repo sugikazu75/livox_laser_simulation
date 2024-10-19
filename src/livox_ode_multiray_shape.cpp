@@ -54,7 +54,7 @@ LivoxOdeMultiRayShape::~LivoxOdeMultiRayShape()
 void LivoxOdeMultiRayShape::UpdateRays()
 {
     ODEPhysicsPtr ode = boost::dynamic_pointer_cast<ODEPhysics>(
-        this->GetWorld()->GetPhysicsEngine());
+        this->GetWorld()->Physics());
 
     if (ode == NULL)
         gzthrow("Invalid physics engine. Must use ODE.");
