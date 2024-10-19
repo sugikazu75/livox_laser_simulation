@@ -5,6 +5,8 @@
 #include "livox_laser_simulation/livox_points_plugin.h"
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/point_cloud_conversion.h>
 #include <gazebo/physics/Model.hh>
 #include <gazebo/physics/MultiRayShape.hh>
 #include <gazebo/physics/PhysicsEngine.hh>
@@ -56,7 +58,7 @@ void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr
     ROS_INFO_STREAM("ros topic name:" << curr_scan_topic);
     ros::init(argc, argv, curr_scan_topic);
     rosNode.reset(new ros::NodeHandle);
-    rosPointPub = rosNode->advertise<sensor_msgs::PointCloud>(curr_scan_topic, 5);
+    rosPointPub = rosNode->advertise<sensor_msgs::PointCloud2>(curr_scan_topic, 5);
 
     raySensor = _parent;
     node = transport::NodePtr(new transport::Node());
@@ -165,7 +167,9 @@ void LivoxPointsPlugin::OnNewLaserScans() {
             //}
         }
         if (scanPub && scanPub->HasConnections()) scanPub->Publish(laserMsg);
-        rosPointPub.publish(scan_point);
+        sensor_msgs::PointCloud2 scan_point2;
+        convertPointCloudToPointCloud2(scan_point, scan_point2);
+        rosPointPub.publish(scan_point2);
         ros::spinOnce();
     }
 }
