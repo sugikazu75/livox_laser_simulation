@@ -16,6 +16,7 @@
           izz="0.01"/>
     </inertial>
   </xacro:macro>
+
   <xacro:macro name="Livox_Mid_gazebo_sensor" params="visualize:=True update_rate:=10 resolution:=0.002 noise_mean:=0.0 noise_stddev:=0.01 name:=livox">
     <gazebo reference="${name}">
       <sensor type="ray" name="laser_${name}">
@@ -60,6 +61,19 @@
     </gazebo>
   </xacro:macro>
 
+  <xacro:macro name="Livox_Mid_gazebo_imu" params="name:=livox">
+    <gazebo>
+      <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+        <bodyName>${name}_base</bodyName>
+        <robotNamespace>${name}</robotNamespace>
+        <topicName>imu</topicName>
+        <serviceName>imu_service</serviceName>
+        <gaussianNoise>0.01</gaussianNoise>
+        <updateRate>200.0</updateRate>
+        <alwaysOn>true</alwaysOn>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
 
   <xacro:macro name="Livox_Mid40" params="visualize:=True name:=livox">
     <link name="${name}_base">
@@ -87,8 +101,12 @@
       <child link="${name}"/>
       <origin rpy="0 0 0" xyz="0.0 1.0 0.2"/>
     </joint>
+
     <xacro:Livox_Mid_gazebo_sensor name="${name}" visualize="${visualize}"/>
+    <xacro:Livox_Mid_gazebo_imu name="${name}"/>
+
   </xacro:macro>
+
     <xacro:Livox_Mid40 name="livox"/>
   <xacro:include filename="$(find livox_laser_simulation)/urdf/standardrobots_oasis300.xacro"/>
   <xacro:link_oasis name="oasis"/>
